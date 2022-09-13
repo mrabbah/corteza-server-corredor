@@ -42,10 +42,10 @@ describe(__filename, () => {
     })
   })
 
-  describe('when parsing invalid script', () => {
-    /* it('should throw an error about missing trigger definition', () => {
+  /* describe('when parsing invalid script', () => {
+    it('should throw an error about missing trigger definition', () => {
       expect(p('export default {}')).to.be.rejectedWith(errTrigDefMis)
-    }) */
+    }) 
 
     it('should throw an error about triggers not defined 1', () => {
       expect(p('export default { triggers: [] }')).to.be.rejectedWith(errNoTrigDef)
@@ -62,7 +62,7 @@ describe(__filename, () => {
     it('should throw an error about triggers not defined 4', () => {
       expect(p('export default { triggers ({ on }) { return on(\'manual\') } }')).to.be.rejectedWith(errExecFunMis)
     })
-  })
+  }) */
 
   describe('when parsing valid script', () => {
     it('return parsed script', () => {
