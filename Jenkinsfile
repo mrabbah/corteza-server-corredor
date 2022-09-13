@@ -43,5 +43,29 @@ pipeline {
                 sh 'mc --config-dir /tmp/.mc cp ./corteza-server-corredor-${BRANCH_NAME}.tar.gz minio/corteza-artifacts'               
             }
         }
+
+        stage('Build Docker image') {
+            
+            steps {
+                sh 'docker build -t mrabbah/corteza-server-corredor:${BRANCH_NAME} . '
+            }
+        }
+        
+        stage('Push Docker image') {
+            
+            steps {
+                echo 'Pushing docker image'
+                script {
+                    sh 'echo $DOCKERHUB_CREDS_PSW | docker login -u $DOCKERHUB_CREDS_USR --password-stdin'    
+                    sh 'docker push mrabbah/corteza-server-corredor:${BRANCH_NAME}'           
+                }
+                
+            }
+        }    
+    }
+    post {
+        always {
+            sh 'docker logout'
+        }
     }        
 }
