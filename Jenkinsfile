@@ -19,7 +19,7 @@ pipeline {
                 //sh 'git reset --hard  && git clean -fdx --exclude="/node_modules/"'
                 sh 'yarn install'
                 sh 'yarn lint'
-                // sh 'yarn test:unit'
+                sh 'yarn test:unit'
             }
         }
         stage('Package') {
@@ -28,6 +28,19 @@ pipeline {
                 sh 'cp -r README.* LICENSE CONTRIBUTING.md DCO .env.example package.json .eslintrc.js .mocharc.js tsconfig.json yarn.lock src node_modules .tmp/corteza-server-corredor/'
 	            sh 'tar -C .tmp -czf corteza-server-corredor-${BRANCH_NAME}.tar.gz corteza-server-corredor'
                 sh 'ls -l && pwd && ls -l .tmp/'
+            }
+        }
+
+        stage('Pushing Artifact') {
+            agent {
+                docker { 
+                    image 'mrabbah/mc:1.1'
+                    reuseNode true
+                } 
+            }
+            steps {
+                sh 'mc --config-dir /tmp/.mc alias set minio $MINIO_HOST $MINIO_CREDS_USR $MINIO_CREDS_PSW'
+                sh 'mc --config-dir /tmp/.mc cp ./build/corteza-server-corredor-${BRANCH_NAME}.tar.gz minio/corteza-artifacts'               
             }
         }
     }        
