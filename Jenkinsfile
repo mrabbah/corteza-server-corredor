@@ -30,5 +30,5 @@ pipeline {
                 sh 'ls -l && pwd && ls -l .tmp/'
             }
         }
-        
+    }        
 }
