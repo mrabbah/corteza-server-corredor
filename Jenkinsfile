@@ -8,15 +8,6 @@ pipeline {
         MINIO_HOST = "https://minio.rabbahsoft.ma:9900"
     }
     stages {
-        stage('Prepare') {
-            
-            steps {
-                //sh 'git reset --hard  && git clean -fdx --exclude="/node_modules/"'
-                sh 'yarn install'
-                sh 'yarn lint'
-                // sh 'yarn test:unit'
-            }
-        }
         stage('Test') {
             agent {
                 docker {
