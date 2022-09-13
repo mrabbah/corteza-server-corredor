@@ -18,9 +18,9 @@ function p (source: string): Promise<Partial<Script>> {
 
 const errExpDefExp = 'expecting default export'
 const errExpObjAsDefExp = 'expecting object as default export'
-const errTrigDefMis = 'triggers definition missing'
-const errNoTrigDef = 'no triggers defined'
-const errExecFunMis = 'exec function missing'
+// const errTrigDefMis = 'triggers definition missing'
+// const errNoTrigDef = 'no triggers defined'
+// const errExecFunMis = 'exec function missing'
 
 describe(__filename, () => {
   describe('when parsing empty script', () => {
