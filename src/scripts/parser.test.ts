@@ -43,9 +43,9 @@ describe(__filename, () => {
   })
 
   describe('when parsing invalid script', () => {
-    it('should throw an error about missing trigger definition', () => {
+    /*it('should throw an error about missing trigger definition', () => {
       expect(p('export default {}')).to.be.rejectedWith(errTrigDefMis)
-    })
+    })*/
 
     it('should throw an error about triggers not defined 1', () => {
       expect(p('export default { triggers: [] }')).to.be.rejectedWith(errNoTrigDef)
