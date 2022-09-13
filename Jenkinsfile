@@ -40,7 +40,7 @@ pipeline {
             }
             steps {
                 sh 'mc --config-dir /tmp/.mc alias set minio $MINIO_HOST $MINIO_CREDS_USR $MINIO_CREDS_PSW'
-                sh 'mc --config-dir /tmp/.mc cp ./build/corteza-server-corredor-${BRANCH_NAME}.tar.gz minio/corteza-artifacts'               
+                sh 'mc --config-dir /tmp/.mc cp ./corteza-server-corredor-${BRANCH_NAME}.tar.gz minio/corteza-artifacts'               
             }
         }
     }        
