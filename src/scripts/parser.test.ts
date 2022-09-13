@@ -18,9 +18,6 @@ function p (source: string): Promise<Partial<Script>> {
 
 const errExpDefExp = 'expecting default export'
 const errExpObjAsDefExp = 'expecting object as default export'
-// const errTrigDefMis = 'triggers definition missing'
-// const errNoTrigDef = 'no triggers defined'
-// const errExecFunMis = 'exec function missing'
 
 describe(__filename, () => {
   describe('when parsing empty script', () => {
@@ -41,28 +38,6 @@ describe(__filename, () => {
       expect(p('export default "string"')).to.be.rejectedWith(errExpObjAsDefExp)
     })
   })
-
-  /* describe('when parsing invalid script', () => {
-    it('should throw an error about missing trigger definition', () => {
-      expect(p('export default {}')).to.be.rejectedWith(errTrigDefMis)
-    }) 
-
-    it('should throw an error about triggers not defined 1', () => {
-      expect(p('export default { triggers: [] }')).to.be.rejectedWith(errNoTrigDef)
-    })
-
-    it('should throw an error about triggers not defined 2', () => {
-      expect(p('export default { triggers () {} }')).to.be.rejectedWith(errNoTrigDef)
-    })
-
-    it('should throw an error about triggers not defined 3', () => {
-      expect(p('export default { * triggers () {} }')).to.be.rejectedWith(errNoTrigDef)
-    })
-
-    it('should throw an error about triggers not defined 4', () => {
-      expect(p('export default { triggers ({ on }) { return on(\'manual\') } }')).to.be.rejectedWith(errExecFunMis)
-    })
-  }) */
 
   describe('when parsing valid script', () => {
     it('return parsed script', () => {
