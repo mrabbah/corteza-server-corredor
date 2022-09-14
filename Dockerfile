@@ -24,6 +24,10 @@ WORKDIR /corredor
 
 RUN apt-get update && apt-get -y install git netcat
 
+RUN wget https://dl.min.io/client/mc/release/linux-amd64/mc
+RUN chmod +x mc
+RUN mv mc /usr/local/bin/
+
 COPY package.json ./
 COPY yarn.lock ./
 

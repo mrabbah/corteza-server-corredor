@@ -62,7 +62,7 @@ spec:
             - name: CORREDOR_EXT_CLIENT_SCRIPTS_WATCH
               value: 'true'
             - name: CORREDOR_EXT_SEARCH_PATHS
-              value: /corredor/usr/*:/corredor/usr
+              value: /corredor/usr/*:/corredor/usr:/corredor/usr/corteza-extensions/*
             - name: CORREDOR_EXEC_CSERVERS_API_BASEURL_TEMPLATE
               value: http://corteza-server-svc:80/api/{service}
           image: mrabbah/corteza-server-corredor:r2022.3.1.x
