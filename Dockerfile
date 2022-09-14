@@ -22,7 +22,7 @@ ENV CORREDOR_EXEC_CSERVERS_API_BASEURL_TEMPLATE "http://server/api/{service}"
 
 WORKDIR /corredor
 
-RUN apt-get update && apt-get -y install git netcat
+RUN apt-get update && apt-get -y install git netcat wget
 
 RUN wget https://dl.min.io/client/mc/release/linux-amd64/mc
 RUN chmod +x mc
