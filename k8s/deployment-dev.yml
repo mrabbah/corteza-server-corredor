@@ -1,0 +1,141 @@
+apiVersion: v1
+data:
+  minio-access-key: bWluaW9hZG1pbg==
+  minio-bucket: Y29ydGV6YS1kZXYtdXBsb2FkLWRhdGE=
+  minio-endpoint: bWluaW8ucmFiYmFoc29mdC5tYTo5OTAw
+  minio-host: aHR0cHM6Ly9taW5pby5yYWJiYWhzb2Z0Lm1hOjk5MDA=
+  minio-secret-key: bUp3Zko2SEFh
+kind: Secret
+metadata:
+  name: corteza-corredor-secrets
+  namespace: corteza-dev
+type: Opaque
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: corredor-extensions-pvc
+  namespace: corteza-dev
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: longhorn
+  volumeMode: Filesystem
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: corteza-corredor
+  labels:
+    workload.user.cattle.io/workloadselector: apps.deployment-corteza-dev-corteza-corredor
+  namespace: corteza-dev
+spec:
+  selector:
+    matchLabels:
+      workload.user.cattle.io/workloadselector: apps.deployment-corteza-dev-corteza-corredor
+  template:
+    metadata:
+      labels:
+        workload.user.cattle.io/workloadselector: apps.deployment-corteza-dev-corteza-corredor
+    spec:
+      containers:
+        - env:
+            - name: CORREDOR_ENV
+              value: dev
+            - name: CORREDOR_DEBUG
+              value: 'true'
+            - name: CORREDOR_ADDR
+              value: 0.0.0.0:50051
+            - name: CORREDOR_LOG_ENABLED
+              value: 'true'
+            - name: CORREDOR_LOG_PRETTY
+              value: 'false'
+            - name: CORREDOR_LOG_LEVEL
+              value: info
+            - name: CORREDOR_SERVER_CERTIFICATES_ENABLED
+              value: 'false'
+            - name: CORREDOR_EXT_SERVER_SCRIPTS_WATCH
+              value: 'true'
+            - name: CORREDOR_EXT_CLIENT_SCRIPTS_WATCH
+              value: 'true'
+            - name: CORREDOR_EXT_SEARCH_PATHS
+              value: /corredor/usr/*:/corredor/usr
+            - name: CORREDOR_EXEC_CSERVERS_API_BASEURL_TEMPLATE
+              value: http://corteza-server-svc:80/api/{service}
+          image: mrabbah/corteza-server-corredor:r2022.3.1.x
+          imagePullPolicy: Always
+          name: corredor-0
+          ports:
+            - containerPort: 50051
+              name: corredor-svc
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /corredor/usr/
+              name: vol-rkdko
+          resources: {}
+      initContainers:
+        - args:
+            - '-c'
+            - >-
+              mc --config-dir /tmp/.mc alias set minio $MINIO_HOST $MINIO_CREDS_USR
+              $MINIO_CREDS_PSW && rm -rf /corredor/usr/corteza-extensions && mc --config-dir /tmp/.mc cp
+              minio/corteza-artifacts/corteza-extensions-r2022.3.1.x.tar.gz
+              /corredor/usr/ && cd /corredor/usr/  && tar xf 
+              corteza-extensions-r2022.3.1.x.tar.gz && rm -f
+              corteza-extensions-r2022.3.1.x.tar.gz
+          command:
+            - /bin/sh
+          env:
+            - name: MINIO_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: minio-host
+                  name: corteza-corredor-secrets
+                  optional: false
+            - name: MINIO_CREDS_USR
+              valueFrom:
+                secretKeyRef:
+                  key: minio-access-key
+                  name: corteza-corredor-secrets
+                  optional: false
+            - name: MINIO_CREDS_PSW
+              valueFrom:
+                secretKeyRef:
+                  key: minio-secret-key
+                  name: corteza-corredor-secrets
+                  optional: false
+          image: mrabbah/mc:1.1
+          imagePullPolicy: IfNotPresent
+          name: init-1
+          volumeMounts:
+            - mountPath: /corredor/usr
+              name: vol-rkdko
+          resources: {}
+      restartPolicy: Always
+      volumes:
+        - name: vol-rkdko
+          persistentVolumeClaim:
+            claimName: corredor-extensions-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: corredor-svc
+  namespace: corteza-dev
+spec:
+  ports:
+  - name: tcp-50051
+    port: 50051
+    protocol: TCP
+    targetPort: 50051
+  selector:
+    workload.user.cattle.io/workloadselector: apps.deployment-corteza-dev-corteza-corredor
+  sessionAffinity: None
+  type: ClusterIP
+
+
+
+
