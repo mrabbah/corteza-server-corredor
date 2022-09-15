@@ -43,6 +43,24 @@ spec:
     spec:
       containers:
         - env:
+            - name: MINIO_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: minio-host
+                  name: corteza-corredor-secrets
+                  optional: false
+            - name: MINIO_CREDS_USR
+              valueFrom:
+                secretKeyRef:
+                  key: minio-access-key
+                  name: corteza-corredor-secrets
+                  optional: false
+            - name: MINIO_CREDS_PSW
+              valueFrom:
+                secretKeyRef:
+                  key: minio-secret-key
+                  name: corteza-corredor-secrets
+                  optional: false
             - name: CORREDOR_ENV
               value: dev
             - name: CORREDOR_DEBUG
